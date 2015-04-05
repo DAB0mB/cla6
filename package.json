@@ -1,0 +1,16 @@
+{
+  "name": "cla6",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://DAB0mB@github.com/DAB0mB/cla6.git"
+  },
+  "devDependencies": {
+    "chai": "~2.1.0",
+    "chai-spies": "~0.5.1",
+    "mocha": "~2.1.0"
+  },
+  "engines": {
+    "node": "~0.10.33"
+  }
+}
