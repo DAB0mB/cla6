@@ -1,4 +1,4 @@
-# Cla6
+# Cla6.js
 ES6 style class system
 
 ## Example
@@ -81,3 +81,10 @@ var instance = new Klass();
 for (var k in instance)
   console.log(k);
 ```
+
+## Download
+The source is available for download from
+[GitHub](http://github.com/DAB0mB/cla6).
+Alternatively, you can install using Node Package Manager (`npm`):
+
+    npm install cla6
