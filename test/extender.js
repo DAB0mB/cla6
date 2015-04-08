@@ -1,5 +1,5 @@
 var Chai = require('chai');
-var Cla6 = require('../index');
+var Cla6 = require('..');
 
 var expect = Chai.expect;
 var spy = Chai.spy;
