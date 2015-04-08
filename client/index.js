@@ -1,0 +1,1 @@
+window.Cla6 = require('..');
