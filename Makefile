@@ -1,5 +1,6 @@
 browserify:
-	browserify client/index.js -o client/cla6.js
+	mkdir -p client
+	browserify lib/cla6.js --standalone Cla6 > client/cla6.js
 	uglifyjs client/cla6.js > client/cla6.min.js
 
 test:
