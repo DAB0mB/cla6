@@ -1,7 +1,6 @@
-browserify:
-	mkdir -p client
-	browserify lib/cla6.js --standalone Cla6 > client/cla6.js
-	uglifyjs client/cla6.js > client/cla6.min.js
+build:
+	browserify core/cla6.js --standalone Cla6 > lib/cla6.js
+	uglifyjs lib/cla6.js > lib/cla6.min.js
 
 test:
 	mocha "test/index.js" --timeout 2000 --reporter nyan
