@@ -2,14 +2,14 @@ var createClass = function(name, props, Parent) {
   if (typeof Parent != 'function')
     Parent = Object;
 
-  var constructor = props.constructor;
+  var ctor = props.constructor;
 
   if (!props.hasOwnProperty('constructor'))
-    constructor = function() {
+    ctor = function() {
       Parent.apply(this, arguments);
     };
 
-  var Child = nameFn(constructor, name);
+  var Child = nameFn(ctor, name);
   
   var fixedProps = Object.keys(props).reduce(function(result, k) {
     if (k == 'constructor')
@@ -35,11 +35,10 @@ var createClass = function(name, props, Parent) {
   return Child;
 };
 
-var nameFn = function(func, name) {
-  return eval('(function ' + name + '() {return func.apply(this, arguments);})');
+var nameFn = function(fn, name) {
+  return eval('(function ' + name + '() {return fn.apply(this, arguments);})');
 };
 
 module.exports = {
-  createClass: createClass,
-  nameFn: nameFn
+  create: createClass
 };

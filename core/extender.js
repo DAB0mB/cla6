@@ -1,6 +1,6 @@
-var _ = require('./utils');
+var ClassFactory = require('./classFactory');
 
-var Extender = _.createClass('Extender', {
+var Extender = ClassFactory.create('Extender', {
   constructor: function(name) {
     this.name = name;
   },
@@ -22,7 +22,7 @@ var Extender = _.createClass('Extender', {
         typeof props.constructor != 'function')
       throwErr('constructor must be a function');
 
-    return _.createClass(this.name, props, Parent);
+    return ClassFactory.create(this.name, props, Parent);
   }
 });
 

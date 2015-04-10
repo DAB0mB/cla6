@@ -1,4 +1,4 @@
-var _ = require('./utils');
+var ClassFactory = require('./classFactory');
 var Extender = require('./extender');
 
 function Cla6(name, props) {
@@ -20,7 +20,7 @@ function Cla6(name, props) {
   if (props == null)
     return new Extender(name);
   else
-    return _.createClass(name, props);
+    return ClassFactory.create(name, props);
 }
 
 var throwErr = function(msg) {
