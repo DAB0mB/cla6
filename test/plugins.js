@@ -4,7 +4,7 @@ var Cla6 = require('..');
 var expect = Chai.expect;
 var spy = Chai.spy;
 
-describe('cla6', function() {
+describe('Cla6', function() {
   describe('plugins', function() {
     describe('validations', function() {
       it('should throw an error if a plugin is not provided', function() {
