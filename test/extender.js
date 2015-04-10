@@ -4,7 +4,7 @@ var Cla6 = require('..');
 var expect = Chai.expect;
 var spy = Chai.spy;
 
-describe('cla6', function() {
+describe('Cla6', function() {
   describe('extender', function() {
     it('should return an extender if only a name is provided', function() {
       var extender = Cla6('Child');
