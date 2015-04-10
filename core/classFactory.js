@@ -1,6 +1,10 @@
 var _ = require('./utils');
 
+var plugins = [];
+
 var createClass = function(name, props, Parent) {
+  props = _.clone(props);
+
   if (typeof Parent != 'function')
     Parent = Object;
 
@@ -8,11 +12,13 @@ var createClass = function(name, props, Parent) {
     props.constructor = function() {
       Parent.apply(this, arguments);
     };
-  
-  var fixedProps = getFixedProps(props);
-  var Child = _.nameFn(props.constructor, name);
 
+  var fixedProps = getFixedProps(props);
+  applyPlugins(fixedProps);
+
+  var Child = _.nameFn(fixedProps.constructor.value, name);
   fixedProps.constructor.value = Child;
+
   Child.prototype = Object.create(Parent.prototype, fixedProps);
   return Child;
 };
@@ -30,6 +36,17 @@ var getFixedProps = function(props) {
   }, {});
 };
 
+var addPlugin = function(plugin) {
+  plugins.push(plugin);
+};
+
+var applyPlugins = function(props) {
+  plugins.forEach(function(plugin) {
+    plugin(props);
+  });
+};
+
 module.exports = {
-  create: createClass
+  create: createClass,
+  use: addPlugin
 };

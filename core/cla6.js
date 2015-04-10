@@ -23,6 +23,16 @@ function Cla6(name, props) {
     return ClassFactory.create(name, props);
 }
 
+Cla6.use = function(plugin) {
+  if (plugin == null)
+    throwErr('a plugin must be provided');
+
+  if (typeof plugin != 'function')
+    throwErr('plugin must be a function');
+
+  ClassFactory.use(plugin);
+};
+
 var throwErr = function(msg) {
   throw Error('Cla6 error - ' + msg);
 };

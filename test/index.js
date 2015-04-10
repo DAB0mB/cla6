@@ -7,3 +7,4 @@ Chai.use(ChaiSpies);
 // tests
 require('./cla6');
 require('./extender');
+require('./plugins');
