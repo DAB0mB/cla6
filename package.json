@@ -1,7 +1,7 @@
 {
   "name": "cla6",
   "version": "1.0.0",
-  "main": "core/cla6.js",
+  "main": "lib/cla6.js",
   "repository": {
     "type": "git",
     "url": "https://DAB0mB@github.com/DAB0mB/cla6.git"
