@@ -17,14 +17,14 @@ describe('Cla6', function() {
       });
     });
 
-    it('should call plugin with class properties', function() {
-      var plugin = spy(function(fixedProps) {
-        expect(fixedProps).to.have.all.keys('constructor', 'method', 'accessor');
-        expect(fixedProps.method.value).to.equal(props.method);
+    it('should call plugin with class descriptors', function() {
+      var plugin = spy(function(descriptors) {
+        expect(descriptors).to.have.all.keys('constructor', 'method', 'accessor');
+        expect(descriptors.method.value).to.equal(props.method);
         
         var accessorDescriptor = Object.getOwnPropertyDescriptor(props, 'accessor');
-        expect(fixedProps.accessor.get).to.equal(accessorDescriptor.get);
-        expect(fixedProps.accessor.set).to.equal(accessorDescriptor.set);
+        expect(descriptors.accessor.get).to.equal(accessorDescriptor.get);
+        expect(descriptors.accessor.set).to.equal(accessorDescriptor.set);
       });
       
       Cla6.use(plugin);

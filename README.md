@@ -1,7 +1,16 @@
 # Cla6.js
-ES6 style class system
+ES6 style class system.  
+
+Although originally designed for
+use with [Node.js](http://nodejs.org) and installable via `npm install cla6`,
+it can also be used directly in the browser.
+
+Cla6 is also installable via:
+
+- [bower](http://bower.io/): `bower install cla6`
 
 ## Example
+
 ```js
 var Cla6 = require('cla6');
 
@@ -41,7 +50,8 @@ child.accessor = child.accessor; // child getter, child setter
 - Highliy compatible
 - Defines classes *THE RIGHT WAY*
 
-Unlike classic class definition, Cla6 defines unenumerable prototype properties
+Unlike classic class definition, Cla6 defines unenumerable prototype properties:
+
 ```js
 // Classic class definition
 
@@ -81,6 +91,15 @@ var instance = new Klass();
 for (var k in instance)
   console.log(k);
 ```
+
+## Plugins
+Plugins can be applied by Cla6 using the following syntax:
+
+```js
+Cla6.use(plugin);
+```
+
+The plugin will be called with the classe's properties object anytime before it gets created, thus the properties can be manipulated. No official plugins are yet available, please stay tuned.
 
 ## Download
 The source is available for download from
