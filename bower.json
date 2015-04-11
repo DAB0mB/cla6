@@ -1,7 +1,7 @@
 {
   "name": "cla6",
-  "version": "1.1.1",
-  "main": "lib/cla6.js",
+  "version": "1.1.0",
+  "main": "client/cla6.js",
   "repository": {
     "type": "git",
     "url": "https://DAB0mB@github.com/DAB0mB/cla6.git"
@@ -13,11 +13,14 @@
     "mocha": "~2.1.0",
     "uglify-js": "~2.4.0"
   },
-  "engines": {
-    "node": "~0.10.0"
-  },
   "keywords": [
     "class",
     "es6"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
   ]
 }
