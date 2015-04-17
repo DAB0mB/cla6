@@ -7,17 +7,17 @@ var spy = Chai.spy;
 describe('Cla6', function() {
   describe('validations', function() {
     it('should throw an error if a name is not provided', function() {
-      expect(Cla6).to.throw(Error, 'name');
+      expect(Cla6).to.throw(Error, /name/);
     });
 
     it('should throw an error if a name is not of type string', function() {
       var boundCla6 = Cla6.bind(null, false);
-      expect(boundCla6).to.throw(Error, 'name', 'string');
+      expect(boundCla6).to.throw(Error, /name.*string/);
     });
 
     it('should throw an error if properties are not defined using an object', function() {
       var boundCla6 = Cla6.bind(null, 'Klass', false);
-      expect(boundCla6).to.throw(Error, 'properties', 'object');
+      expect(boundCla6).to.throw(Error, /properties.*object/);
     });
 
     it('should throw an error if constructor is not a function', function() {
@@ -25,7 +25,7 @@ describe('Cla6', function() {
         constructor: false
       });
 
-      expect(boundCla6).to.throw(Error, 'constructor', 'function');
+      expect(boundCla6).to.throw(Error, /constructor.*function/);
     });
   });
 

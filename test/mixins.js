@@ -14,12 +14,12 @@ describe('Cla6', function() {
 
     describe('validations', function() {
       it('should throw error if no properties provided', function() {
-        expect(this.Klass.mixin).to.throw(Error, 'properties');
+        expect(this.Klass.mixin).to.throw(Error, /properties/);
       });
 
       it('should throw an error if properties are not defined using an object', function() {
         var mixin = this.Klass.mixin.bind(null, false);
-        expect(mixin).to.throw(Error, 'properties', 'object');
+        expect(mixin).to.throw(Error, /properties.*object/);
       });
     });
 

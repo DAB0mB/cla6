@@ -8,12 +8,12 @@ describe('Cla6', function() {
   describe('plugins', function() {
     describe('validations', function() {
       it('should throw an error if a plugin is not provided', function() {
-        expect(Cla6.use).to.throw(Error, 'plugin');
+        expect(Cla6.use).to.throw(Error, /plugin/);
       });
 
       it('should throw an error if plugin is not a function', function() {
         bondUse = Cla6.use.bind(null, false);
-        expect(bondUse).to.throw(Error, 'plugin', 'function');
+        expect(bondUse).to.throw(Error, /plugin.*function/);
       });
     });
 
