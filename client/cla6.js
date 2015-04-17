@@ -44,6 +44,28 @@ var _ = require('./utils');
 
 var plugins = [];
 
+var classExtensions = {
+  mixin: function(props) {
+    if (arguments.length > 1) {
+      Array.prototype.forEach.call(arguments, function(props) {
+        this.mixin(props);
+      }, this);
+
+    } else {
+      if (props == null)
+        throwErr('properties must be provided');
+
+      if (typeof props != 'object')
+        throwErr('properties must be defined using an object');
+
+      descriptors = _.toDescriptors(props);
+      Object.defineProperties(this.prototype, descriptors);
+    }
+
+    return this;
+  }
+};
+
 var createClass = function(name, props, Parent) {
   props = _.clone(props);
 
@@ -55,37 +77,30 @@ var createClass = function(name, props, Parent) {
       Parent.apply(this, arguments);
     };
 
-  var fixedProps = getFixedProps(props);
-  applyPlugins(fixedProps);
+  var descriptors = _.toDescriptors(props);
+  applyPlugins(descriptors);
 
-  var Child = _.nameFn(fixedProps.constructor.value, name);
-  fixedProps.constructor.value = Child;
+  var Child = _.nameFn(descriptors.constructor.value, name);
+  _.extend(Child, classExtensions);
 
-  Child.prototype = Object.create(Parent.prototype, fixedProps);
+  descriptors.constructor.value = Child;
+  Child.prototype = Object.create(Parent.prototype, descriptors);
+
   return Child;
-};
-
-var getFixedProps = function(props) {
-  return Object.keys(props).reduce(function(result, k) {
-    var descriptor = Object.getOwnPropertyDescriptor(props, k);
-    delete descriptor.enumerable;
-
-    if (descriptor.value == null)
-      delete descriptor.writable;
-
-    result[k] = descriptor;
-    return result;
-  }, {});
 };
 
 var addPlugin = function(plugin) {
   plugins.push(plugin);
 };
 
-var applyPlugins = function(props) {
+var applyPlugins = function(descriptors) {
   plugins.forEach(function(plugin) {
-    plugin(props);
+    plugin(descriptors);
   });
+};
+
+var throwErr = function(msg) {
+  throw Error('Cla6 Class error - ' + msg);
 };
 
 module.exports = {
@@ -134,13 +149,34 @@ var clone = function(obj) {
   }, {});
 };
 
+var extend = function(obj, extension) {
+  Object.keys(extension).forEach(function(k) {
+    obj[k] = extension[k];
+  });
+};
+
 var nameFn = function(fn, name) {
   return eval('(function ' + name + '() {return fn.apply(this, arguments);})');
 };
 
+var toDescriptors = function(props) {
+  return Object.keys(props).reduce(function(result, k) {
+    var descriptor = Object.getOwnPropertyDescriptor(props, k);
+    delete descriptor.enumerable;
+
+    if (descriptor.value == null)
+      delete descriptor.writable;
+
+    result[k] = descriptor;
+    return result;
+  }, {});
+};
+
 module.exports = {
   clone: clone,
-  nameFn: nameFn
+  extend: extend,
+  nameFn: nameFn,
+  toDescriptors: toDescriptors
 };
 },{}]},{},[1])(1)
 });
