@@ -1,15 +1,15 @@
 # Cla6.js
-ES6 style class system.  
 
-Although originally designed for
-use with [Node.js](http://nodejs.org) and installable via `npm install cla6`,
+ES6 style class system.
+
+Provides a class factory with additional functionality, like [`mixins`](#mixins) and [`plugins`](#plugins). Although originally designed for use with [Node.js](http://nodejs.org) and installable via `npm install cla6`,
 it can also be used directly in the browser.
 
 Cla6 is also installable via:
 
 - [bower](http://bower.io/): `bower install cla6`
 
-## Example
+## Basic Example
 
 ```js
 var Cla6 = require('cla6');
@@ -45,6 +45,7 @@ child.accessor = child.accessor; // child getter, child setter
 ```
 
 ## Why Use It
+
 - Easy to use
 - Easy to read
 - Highliy compatible
@@ -92,14 +93,56 @@ for (var k in instance)
   console.log(k);
 ```
 
+## Mixins
+
+Each class created by Cla6 can be extended using a mixin. Mixins can be applied at class creation or during run time.
+
+```js
+var mixin1 = {
+    method1: function() {
+        console.log('mixin1');
+    }
+};
+
+var mixin2 = {
+    method2: function() {
+        console.log('mixin2');
+    }
+};
+
+var mixin3 = {
+    method3: function() {
+        console.log('mixin3');
+    }
+};
+
+var Klass = Cla6('Klass', {
+  constructor: function() {
+    console.log("klass");
+  },
+}).mixin(mixin1, mixin2);
+
+Klass.mixin(mixin3);
+
+var obj = new Klass(); // klass
+obj.method1(); // mixin1
+obj.method2(); // mixin2
+obj.method3(); // mixin3
+```
+
 ## Plugins
-Plugins can be applied by Cla6 using the following syntax:
+
+A Cla6 plugin is a manupulation function which gets the classe's descriptors anytime before it gets created, thus the properties can be manipulated. Multipile plugins can be applied and will be called by their use order.  
+
+Note, each plugin will affect the descriptors object for the next plugin in the plugins chain.
 
 ```js
 Cla6.use(plugin);
 ```
 
-The plugin will be called with the classe's properties object anytime before it gets created, thus the properties can be manipulated. No official plugins are yet available, please stay tuned.
+The official plugins currently available are:
+
+- [cla6-hidden](https://github.com/DAB0mB/cla6-hidden)
 
 ## Download
 The source is available for download from
