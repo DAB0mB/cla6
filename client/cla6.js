@@ -59,6 +59,8 @@ var classExtensions = {
         throwErr('properties must be defined using an object');
 
       descriptors = _.toDescriptors(props);
+      applyPlugins(descriptors);
+
       Object.defineProperties(this.prototype, descriptors);
     }
 
