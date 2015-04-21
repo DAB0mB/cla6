@@ -1,8 +1,11 @@
 var Chai = require('chai');
 var Cla6 = require('..');
 
+var ClassFactory = require('../lib/classFactory');
+
 var expect = Chai.expect;
 var spy = Chai.spy;
+var unuse = ClassFactory.unuse;
 
 describe('Cla6', function() {
   describe('mixins', function() {
@@ -53,6 +56,33 @@ describe('Cla6', function() {
       expect(obj.foo()).to.equal('foo');
       expect(obj.bar()).to.equal('bar');
       expect(obj.baz).to.equal('overriden');
+    });
+
+    describe('plugins', function() {
+      it('should apply plugins for applied mixins', function() {
+        var mixin = {
+          method: function() {},
+          get accessor() {},
+          set accessor(value) {}
+        };
+        
+        var plugin = spy(function(descriptors) {
+          expect(descriptors).to.have.all.keys('method', 'accessor');
+          expect(descriptors.method.value).to.equal(mixin.method);
+          
+          var accessorDescriptor = Object.getOwnPropertyDescriptor(mixin, 'accessor');
+          expect(descriptors.accessor.get).to.equal(accessorDescriptor.get);
+          expect(descriptors.accessor.set).to.equal(accessorDescriptor.set);
+        });
+
+        Cla6.use(plugin);
+        this.Klass.mixin(mixin);
+        expect(plugin).to.have.been.called.once;
+
+        unuse(plugin);
+        this.Klass.mixin(mixin);
+        expect(plugin).to.have.been.called.once;
+      });
     });
   });
 });
