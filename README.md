@@ -1,7 +1,5 @@
 # Cla6.js
 
-ES6 style class system.
-
 Provides a class factory with additional functionality, like [`mixins`](#mixins) and [`plugins`](#plugins). Although originally designed for use with [Node.js](http://nodejs.org) and installable via `npm install cla6`,
 it can also be used directly in the browser.
 
@@ -99,21 +97,21 @@ Each class created by Cla6 can be extended using a mixin. Mixins can be applied 
 
 ```js
 var mixin1 = {
-    method1: function() {
-        console.log('mixin1');
-    }
+  method1: function() {
+    console.log('mixin1');
+  }
 };
 
 var mixin2 = {
-    method2: function() {
-        console.log('mixin2');
-    }
+  method2: function() {
+    console.log('mixin2');
+  }
 };
 
 var mixin3 = {
-    method3: function() {
-        console.log('mixin3');
-    }
+  method3: function() {
+    console.log('mixin3');
+  }
 };
 
 var Klass = Cla6('Klass', {
@@ -145,6 +143,7 @@ The official plugins currently available are:
 - [cla6-hidden](https://github.com/DAB0mB/cla6-hidden)
 
 ## Download
+
 The source is available for download from
 [GitHub](http://github.com/DAB0mB/cla6).
 Alternatively, you can install using Node Package Manager (`npm`):

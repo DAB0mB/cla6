@@ -1,5 +1,6 @@
 {
   "name": "cla6",
+  "description": "ES6 style class system",
   "version": "1.2.1",
   "main": "client/cla6.js",
   "repository": {
