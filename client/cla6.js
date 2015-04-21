@@ -95,6 +95,11 @@ var addPlugin = function(plugin) {
   plugins.push(plugin);
 };
 
+var removePlugin = function(plugin) {
+  var index = plugins.indexOf(plugin);
+  plugins.splice(index, 1);
+};
+
 var applyPlugins = function(descriptors) {
   plugins.forEach(function(plugin) {
     plugin(descriptors);
@@ -107,7 +112,8 @@ var throwErr = function(msg) {
 
 module.exports = {
   create: createClass,
-  use: addPlugin
+  use: addPlugin,
+  unuse: removePlugin
 };
 },{"./utils":4}],3:[function(require,module,exports){
 var ClassFactory = require('./classFactory');

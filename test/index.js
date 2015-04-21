@@ -7,5 +7,5 @@ Chai.use(ChaiSpies);
 // tests
 require('./cla6');
 require('./extender');
-require('./mixins');
 require('./plugins');
+require('./mixins');
