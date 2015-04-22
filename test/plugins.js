@@ -1,11 +1,11 @@
 var Chai = require('chai');
 var Cla6 = require('..');
 
-var ClassFactory = require('../lib/classFactory');
+var PluginsManager = require('../lib/pluginsManager');
 
 var expect = Chai.expect;
 var spy = Chai.spy;
-var unuse = ClassFactory.unuse;
+var unuse = PluginsManager.remove;
 
 describe('Cla6', function() {
   describe('plugins', function() {
@@ -20,24 +20,26 @@ describe('Cla6', function() {
       });
     });
 
-    it('should call plugin with class descriptors', function() {
+    it('should call plugin with class\'es descriptors and parent', function() {
       var props = {
         method: function() {},
         get accessor() {},
         set accessor(value) {}
       };
 
-      var plugin = spy(function(descriptors) {
+      var plugin = spy(function(descriptors, Parent) {
         expect(descriptors).to.have.all.keys('constructor', 'method', 'accessor');
         expect(descriptors.method.value).to.equal(props.method);
         
         var accessorDescriptor = Object.getOwnPropertyDescriptor(props, 'accessor');
         expect(descriptors.accessor.get).to.equal(accessorDescriptor.get);
         expect(descriptors.accessor.set).to.equal(accessorDescriptor.set);
+
+        expect(Parent).to.equal(Array);
       });      
 
       Cla6.use(plugin);
-      Cla6('Klass', props);
+      Cla6('Klass').extend(Array, props);
       expect(plugin).to.have.been.called.once;
 
       unuse(plugin);

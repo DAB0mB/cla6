@@ -1,11 +1,11 @@
 var Chai = require('chai');
 var Cla6 = require('..');
 
-var ClassFactory = require('../lib/classFactory');
+var PluginsManager = require('../lib/pluginsManager');
 
 var expect = Chai.expect;
 var spy = Chai.spy;
-var unuse = ClassFactory.unuse;
+var unuse = PluginsManager.remove;
 
 describe('Cla6', function() {
   describe('mixins', function() {
