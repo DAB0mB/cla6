@@ -1,6 +1,7 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Cla6 = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var ClassFactory = require('./classFactory');
 var Extender = require('./extender');
+var ClassFactory = require('./classFactory');
+var PluginsManager = require('./pluginsManager');
 
 function Cla6(name, props) {
   if (name == null)
@@ -31,7 +32,7 @@ Cla6.use = function(plugin) {
   if (typeof plugin != 'function')
     throwErr('plugin must be a function');
 
-  ClassFactory.use(plugin);
+  PluginsManager.add(plugin);
 };
 
 var throwErr = function(msg) {
@@ -39,34 +40,10 @@ var throwErr = function(msg) {
 };
 
 module.exports = Cla6;
-},{"./classFactory":2,"./extender":3}],2:[function(require,module,exports){
+},{"./classFactory":2,"./extender":3,"./pluginsManager":5}],2:[function(require,module,exports){
 var _ = require('./utils');
-
-var plugins = [];
-
-var classExtensions = {
-  mixin: function(props) {
-    if (arguments.length > 1) {
-      Array.prototype.forEach.call(arguments, function(props) {
-        this.mixin(props);
-      }, this);
-
-    } else {
-      if (props == null)
-        throwErr('properties must be provided');
-
-      if (typeof props != 'object')
-        throwErr('properties must be defined using an object');
-
-      descriptors = _.toDescriptors(props);
-      applyPlugins(descriptors);
-
-      Object.defineProperties(this.prototype, descriptors);
-    }
-
-    return this;
-  }
-};
+var ExtensionFactory = require('./extensionFactory');
+var PluginsManager = require('./pluginsManager');
 
 var createClass = function(name, props, Parent) {
   props = _.clone(props);
@@ -80,10 +57,11 @@ var createClass = function(name, props, Parent) {
     };
 
   var descriptors = _.toDescriptors(props);
-  applyPlugins(descriptors);
+  PluginsManager.manipulate(descriptors, Parent);
 
   var Child = _.nameFn(descriptors.constructor.value, name);
-  _.extend(Child, classExtensions);
+  var extension = ExtensionFactory.create(Parent);
+  _.extend(Child, extension);
 
   descriptors.constructor.value = Child;
   Child.prototype = Object.create(Parent.prototype, descriptors);
@@ -91,31 +69,10 @@ var createClass = function(name, props, Parent) {
   return Child;
 };
 
-var addPlugin = function(plugin) {
-  plugins.push(plugin);
-};
-
-var removePlugin = function(plugin) {
-  var index = plugins.indexOf(plugin);
-  plugins.splice(index, 1);
-};
-
-var applyPlugins = function(descriptors) {
-  plugins.forEach(function(plugin) {
-    plugin(descriptors);
-  });
-};
-
-var throwErr = function(msg) {
-  throw Error('Cla6 Class error - ' + msg);
-};
-
 module.exports = {
-  create: createClass,
-  use: addPlugin,
-  unuse: removePlugin
+  create: createClass
 };
-},{"./utils":4}],3:[function(require,module,exports){
+},{"./extensionFactory":4,"./pluginsManager":5,"./utils":6}],3:[function(require,module,exports){
 var ClassFactory = require('./classFactory');
 
 var Extender = ClassFactory.create('Extender', {
@@ -150,6 +107,67 @@ var throwErr = function(msg) {
 
 module.exports = Extender;
 },{"./classFactory":2}],4:[function(require,module,exports){
+var _ = require('./utils');
+var PluginsManager = require('./pluginsManager');
+
+var createExtension = function(Parent) {
+  var mixin = function(props) {
+    if (arguments.length > 1) {
+      Array.prototype.forEach.call(arguments, function(props) {
+        this.mixin(props);
+      }, this);
+
+    } else {
+      if (props == null)
+        throwErr('properties must be provided');
+
+      if (typeof props != 'object')
+        throwErr('properties must be defined using an object');
+
+      descriptors = _.toDescriptors(props);
+      PluginsManager.manipulate(descriptors, Parent);
+      Object.defineProperties(this.prototype, descriptors);
+    }
+
+    return this;
+  };
+
+  return {
+    mixin: mixin
+  };
+};
+
+var throwErr = function(msg) {
+  throw Error('Cla6 mixin error - ' + msg);
+};
+
+module.exports = {
+  create: createExtension
+};
+},{"./pluginsManager":5,"./utils":6}],5:[function(require,module,exports){
+var plugins = [];
+
+var add = function(plugin) {
+  plugins.push(plugin);
+};
+
+var remove = function(plugin) {
+  var index = plugins.indexOf(plugin);
+  plugins.splice(index, 1);
+};
+
+var manipulate = function(descriptors, Parent) {
+  plugins.forEach(function(plugin) {
+    plugin(descriptors, Parent);
+  });
+};
+
+module.exports = {
+  add: add,
+  remove: remove,
+  manipulate: manipulate
+};
+},{}],6:[function(require,module,exports){
 var clone = function(obj) {
   return Object.keys(obj).reduce(function(result, k) {
     var descriptor = Object.getOwnPropertyDescriptor(obj, k);

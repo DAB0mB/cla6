@@ -130,7 +130,7 @@ obj.method3(); // mixin3
 
 ## Plugins
 
-A Cla6 plugin is a manupulation function which gets the classe's descriptors anytime before it gets created, thus the properties can be manipulated. Multipile plugins can be applied and will be called by their use order.  
+A Cla6 plugin is a manupulation function which gets the classe's descriptors and parent anytime before it gets created, thus the properties can be manipulated. Multipile plugins can be applied and will be called by their use order.  
 
 Note, each plugin will affect the descriptors object for the next plugin in the plugins chain.
 
