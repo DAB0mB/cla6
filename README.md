@@ -130,9 +130,9 @@ obj.method3(); // mixin3
 
 ## Plugins
 
-A Cla6 plugin is a manupulation function which gets the classe's descriptors and parent anytime before it gets created, thus the properties can be manipulated. Multipile plugins can be applied and will be called by their use order.  
+A plugin is a module which adds functionality to Cla6 and can be loaded dynamcally. Multipile plugins can be applied and will be called by their order of use.
 
-Note, each plugin will affect the descriptors object for the next plugin in the plugins chain.
+Note, each plugin will affect the arguments for the next plugin in the plugins chain.
 
 ```js
 Cla6.use(plugin);
@@ -142,6 +142,28 @@ The official plugins currently available are:
 
 - [cla6-base](https://github.com/DAB0mB/cla6-base)
 - [cla6-hidden](https://github.com/DAB0mB/cla6-hidden)
+
+### Building a plugin
+
+A basic plugin stracture should look like so:
+
+```js
+var initialize = function(Cla6) {
+  // initializer logic
+};
+
+var manipulate = function(descriptors, Parent) {
+  // manipulator logic
+};
+
+module.exports = {
+  initialize: initialize,
+  manipulate: manipulate
+};
+```
+
+- `initialize` - An optional initializer function which will be called with Cla6 instance once the plugin is used.
+- `manipulate` - A required manipulator function which will be called every time before a class gets created with its descriptors and Parent class.
 
 ## Download
 
