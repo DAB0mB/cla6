@@ -1,7 +1,7 @@
 {
   "name": "cla6",
   "description": "ES6 style class system",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "main": "lib/cla6.js",
   "repository": {
     "type": "git",
