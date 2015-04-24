@@ -1,4 +1,5 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Cla6 = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var _ = require('./utils');
 var Extender = require('./extender');
 var ClassFactory = require('./classFactory');
 var PluginsManager = require('./pluginsManager');
@@ -27,10 +28,25 @@ function Cla6(name, props) {
 
 Cla6.use = function(plugin) {
   if (plugin == null)
-    throwErr('a plugin must be provided');
+    throwPluginErr('a plugin must be provided');
 
-  if (typeof plugin != 'function')
-    throwErr('plugin must be a function');
+  if (typeof plugin != 'object')
+    throwPluginErr('plugin must be an object');
+
+  if (plugin.manipulate == null)
+    throwPluginErr('manipulator must be defined');
+
+  if (typeof plugin.manipulate != 'function')
+    throwPluginErr('manipulator must be a function');
+
+  if (plugin.initialize != null &&
+      typeof plugin.initialize != 'function')
+    throwPluginErr('initializer must be a function');
+
+  plugin = _.clone(plugin);
+
+  if (plugin.initialize != null)
+    plugin.initialize = plugin.initialize.bind(null, Cla6);
 
   PluginsManager.add(plugin);
 };
@@ -39,8 +55,12 @@ var throwErr = function(msg) {
   throw Error('Cla6 error - ' + msg);
 };
 
+var throwPluginErr = function(msg) {
+  throw Error('Cla6 plugin error - ' + msg);
+};
+
 module.exports = Cla6;
-},{"./classFactory":2,"./extender":3,"./pluginsManager":5}],2:[function(require,module,exports){
+},{"./classFactory":2,"./extender":3,"./pluginsManager":5,"./utils":6}],2:[function(require,module,exports){
 var _ = require('./utils');
 var ExtensionFactory = require('./extensionFactory');
 var PluginsManager = require('./pluginsManager');
@@ -119,10 +139,10 @@ var createExtension = function(Parent) {
 
     } else {
       if (props == null)
-        throwErr('properties must be provided');
+        throwMixinErr('properties must be provided');
 
       if (typeof props != 'object')
-        throwErr('properties must be defined using an object');
+        throwMixinErr('properties must be defined using an object');
 
       descriptors = _.toDescriptors(props);
       PluginsManager.manipulate(descriptors, Parent);
@@ -137,7 +157,7 @@ var createExtension = function(Parent) {
   };
 };
 
-var throwErr = function(msg) {
+var throwMixinErr = function(msg) {
   throw Error('Cla6 mixin error - ' + msg);
 };
 
@@ -148,6 +168,9 @@ module.exports = {
 var plugins = [];
 
 var add = function(plugin) {
+  if (plugin.initialize != null)
+    plugin.initialize();
+
   plugins.push(plugin);
 };
 
@@ -158,7 +181,7 @@ var remove = function(plugin) {
 
 var manipulate = function(descriptors, Parent) {
   plugins.forEach(function(plugin) {
-    plugin(descriptors, Parent);
+    plugin.manipulate(descriptors, Parent);
   });
 };
 
@@ -169,16 +192,14 @@ module.exports = {
 };
 },{}],6:[function(require,module,exports){
 var clone = function(obj) {
-  return Object.keys(obj).reduce(function(result, k) {
-    var descriptor = Object.getOwnPropertyDescriptor(obj, k);
-    return Object.defineProperty(result, k, descriptor);
-  }, {});
+  return extend({}, obj);
 };
 
 var extend = function(obj, extension) {
-  Object.keys(extension).forEach(function(k) {
-    obj[k] = extension[k];
-  });
+  return Object.keys(extension).reduce(function(result, k) {
+    var descriptor = Object.getOwnPropertyDescriptor(extension, k);
+    return Object.defineProperty(result, k, descriptor);
+  }, obj);
 };
 
 var nameFn = function(fn, name) {

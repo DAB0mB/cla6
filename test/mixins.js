@@ -66,7 +66,7 @@ describe('Cla6', function() {
           set accessor(value) {}
         };
         
-        var plugin = spy(function(descriptors) {
+        var manipulate = spy(function(descriptors) {
           expect(descriptors).to.have.all.keys('method', 'accessor');
           expect(descriptors.method.value).to.equal(mixin.method);
           
@@ -75,13 +75,17 @@ describe('Cla6', function() {
           expect(descriptors.accessor.set).to.equal(accessorDescriptor.set);
         });
 
+        var plugin = {
+          manipulate: manipulate
+        };
+
         Cla6.use(plugin);
         this.Klass.mixin(mixin);
-        expect(plugin).to.have.been.called.once;
+        expect(plugin.manipulate).to.have.been.called.once;
 
         unuse(plugin);
         this.Klass.mixin(mixin);
-        expect(plugin).to.have.been.called.once;
+        expect(plugin.manipulate).to.have.been.called.once;
       });
     });
   });
