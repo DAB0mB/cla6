@@ -140,6 +140,7 @@ Cla6.use(plugin);
 
 The official plugins currently available are:
 
+- [cla6-base](https://github.com/DAB0mB/cla6-base)
 - [cla6-hidden](https://github.com/DAB0mB/cla6-hidden)
 
 ## Download
