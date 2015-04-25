@@ -46,7 +46,7 @@ Cla6.use = function(plugin) {
   plugin = _.clone(plugin);
 
   if (plugin.initialize != null)
-    plugin.initialize = plugin.initialize.bind(null, Cla6);
+    plugin.initialize = plugin.initialize.bind(plugin, Cla6);
 
   PluginsManager.add(plugin);
 };
