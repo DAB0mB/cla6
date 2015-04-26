@@ -10,8 +10,8 @@
   "devDependencies": {
     "browserify": "~9.0.0",
     "chai": "~2.1.0",
-    "chai-spies": "~0.5.0",
     "mocha": "~2.1.0",
+    "sinon": "~1.14.0",
     "uglify-js": "~2.4.0"
   },
   "engines": {

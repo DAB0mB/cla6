@@ -7,39 +7,79 @@ Cla6 is also installable via:
 
 - [bower](http://bower.io/): `bower install cla6`
 
-## Basic Example
+## Usage
 
+Cla6 is super declerative and easy to understand. Here are few examples:
+
+### Basic
 ```js
-var Cla6 = require('cla6');
+var Klass = Cla6('Klass', {
+  'static lib': 'cla6',
 
-var Parent = Cla6('Parent', {
-  constructor: function() {
-    console.log('parent constructor');
+  'constructor': function(foo, bar) {
+    this.foo = foo;
+    this.bar = bar;
   },
 
-  parentMethod: function() {
-    console.log('parent method');
+  'method': function() {
+    return this.foo + this.bar;
+  },
+
+  'get accessor': function() {
+    return this._private;
+  },
+
+  'set accessor': function(v) {
+    this._private = v;
+  },
+});
+```
+
+### Inheritance
+```js
+var Parent = Cla6('Parent', {
+  'constructor': function(foo, bar) {
+    this.foo = foo;
+    this.bar = bar;
+  },
+
+  'method': function() {
+    return this.foo + this.bar;
   }
 });
 
 var Child = Cla6('Child').extend(Parent, {
-  childMethod: function() {
-    this.parentMethod();
-    console.log('child method');
+  'constructor': function(foo, bar, baz) {
+    Parent.call(this, foo, bar);
+    this.baz = baz;
   },
 
-  get accessor() {
-    console.log('child getter');
-  },
-
-  set accessor(value) {
-    console.log('child setter');
+  'method': function() {
+    var result = Parent.prototype.method.apply(this, arguments);
+    return result + this.baz;
   }
 });
+```
 
-child = new Child(); // parent constructor
-child.childMethod(); // parent method, child method
-child.accessor = child.accessor; // child getter, child setter
+### Mixins
+```js
+var mixin1 = {
+  method1: function() {
+    return "mixin1";
+  }
+};
+
+var mixin2 = {
+  method2: function() {
+    return "mixin2";
+  }
+};
+
+var Mixed = Cla6('Mixed').mixin(mixin1, mixin2, {
+  method3: function() {
+    return this.method1() + this.method2() + "method3";
+  }
+});
 ```
 
 ## Why Use It
@@ -49,7 +89,7 @@ child.accessor = child.accessor; // child getter, child setter
 - Highliy compatible
 - Defines classes *THE RIGHT WAY*
 
-Unlike classic class definition, Cla6 defines unenumerable prototype properties:
+Unlike classic class definition, Cla6 defines unenumerable peroperties, just like native classes:
 
 ```js
 // Classic class definition
@@ -66,10 +106,8 @@ Klass.prototype.baz = function() {
 };
 
 var instance = new Klass();
-
-// prints foo, bar, baz
-for (var k in instance)
-  console.log(k);
+var keys = Object.keys(instance);
+console.log(keys); // foo, bar, baz
 
 // Cla6 class definition
 
@@ -85,54 +123,15 @@ var Klass = Cla6('Klass', {
 });
 
 var instance = new Klass();
-
-// prints foo, bar
-for (var k in instance)
-  console.log(k);
-```
-
-## Mixins
-
-Each class created by Cla6 can be extended using a mixin. Mixins can be applied at class creation or during run time.
-
-```js
-var mixin1 = {
-  method1: function() {
-    console.log('mixin1');
-  }
-};
-
-var mixin2 = {
-  method2: function() {
-    console.log('mixin2');
-  }
-};
-
-var mixin3 = {
-  method3: function() {
-    console.log('mixin3');
-  }
-};
-
-var Klass = Cla6('Klass', {
-  constructor: function() {
-    console.log("klass");
-  },
-}).mixin(mixin1, mixin2);
-
-Klass.mixin(mixin3);
-
-var obj = new Klass(); // klass
-obj.method1(); // mixin1
-obj.method2(); // mixin2
-obj.method3(); // mixin3
+var keys = Object.keys(instance);
+console.log(keys); // foo, bar
 ```
 
 ## Plugins
 
-A plugin is a module which adds functionality to Cla6 and can be loaded dynamcally. Multipile plugins can be applied and will be called by their order of use.
+A plugin is a module which adds functionality to Cla6 and can be loaded dynamcally.
 
-Note, each plugin will affect the arguments for the next plugin in the plugins chain.
+Multipile plugins can be applied and will be called by their order of use:
 
 ```js
 Cla6.use(plugin);
@@ -163,7 +162,7 @@ module.exports = {
 ```
 
 - `initialize` - An optional initializer function which will be called with Cla6 instance once the plugin is used.
-- `manipulate` - A required manipulator function which will be called every time before a class gets created with its descriptors and Parent class.
+- `manipulate` - A required manipulator function which will be called class creation with its properties and Parent class.
 
 ## Download
 

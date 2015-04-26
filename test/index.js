@@ -1,11 +1,6 @@
-var Chai = require('chai');
-var ChaiSpies = require('chai-spies');
-
-// plugins
-Chai.use(ChaiSpies);
-
 // tests
-require('./cla6');
-require('./extender');
-require('./plugins');
-require('./mixins');
+require('./pluginsManager.test');
+require('./classFactory.test');
+require('./cla6.test');
+require('./extender.test');
+require('./mixer.test');
