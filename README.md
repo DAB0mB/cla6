@@ -1,4 +1,4 @@
-# Cla6.js
+<img src="https://raw.github.com/DAB0mB/cla6/v2/images/cla6.png" />
 
 Provides a class factory with additional functionality, like [`mixins`](#mixins) and [`plugins`](#plugins). Although originally designed for use with [Node.js](http://nodejs.org) and installable via `npm install cla6`,
 it can also be used directly in the browser.
