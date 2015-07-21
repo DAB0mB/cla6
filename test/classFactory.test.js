@@ -25,6 +25,9 @@ describe('ClassFactory', function() {
     it('should throw an error if properties are not defined using an object', function() {
       var boundCreate = ClassFactory.create.bind(ClassFactory, 'Klass', false);
       expect(boundCreate).to.throw(Error, /properties.*object/);
+
+      boundCreate = ClassFactory.create.bind(ClassFactory, 'Klass', function() { return false; });
+      expect(boundCreate).to.throw(Error, /properties.*object/);
     });
 
     it('should throw an error if constructor is not a function', function() {
