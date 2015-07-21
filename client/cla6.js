@@ -34,6 +34,9 @@ var PluginsManager = require('./pluginsManager');
 var Util = require('./util');
 
 var create = function(name, props, Parent, mixins) {
+  if (typeof props == 'function')
+    props = injectProviders(props);
+
   if (typeof props != 'object')
     throwErr('properties must be defined using an object');
 
@@ -65,6 +68,11 @@ var create = function(name, props, Parent, mixins) {
   Child.prototype = Object.create(Parent.prototype, descriptors);
   defineStatics(Child, props);
   return Child;
+};
+
+var injectProviders = function(fn) {
+  var providers = Util.getParams(fn).map(PluginsManager.getProvider);
+  return fn.apply(null, providers);
 };
 
 var generateDescriptors = function(props) {
@@ -122,7 +130,12 @@ var defineStatics = function(Klass, props) {
   .forEach(function(k) {
     var v = props[k];
     var prop = k.split(' ')[1];
-    Klass[prop] = v;
+
+    Object.defineProperty(Klass, prop, {
+      configurable: true,
+      writable: true,
+      value: v
+    });
   });
 };
 
@@ -226,15 +239,28 @@ var manipulate = function(props, Parent) {
   });
 };
 
+var getProvider = function(name) {
+  var provider;
+
+  plugins.some(function(plugin) {
+    if (plugin.name === name) {
+      provider = plugin.provider;
+      return true;
+    }
+  });
+
+  return provider;
+};
+
 var throwErr = function(msg) {
   throw Error('Cla6 plugin error - ' + msg);
 };
 
 module.exports = {
-  plugins: plugins,
   add: add,
   reset: reset,
-  manipulate: manipulate
+  manipulate: manipulate,
+  getProvider: getProvider
 };
 },{"./util":6}],6:[function(require,module,exports){
 var clone = function(obj) {
@@ -252,10 +278,18 @@ var nameFn = function(fn, name) {
   return eval('(function ' + name + '() {return fn.apply(this, arguments);})');
 };
 
+var getParams = function(fn) {
+  return fn.toString()
+    .replace(/((\/\/.*$)|(\/\*[\s\S]*?\*\/)|(\s))/mg,'') // strip comments
+    .match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)[1] // get params
+    .split(/,/); // split params
+};
+
 module.exports = {
   clone: clone,
   extend: extend,
-  nameFn: nameFn
+  nameFn: nameFn,
+  getParams: getParams
 };
 },{}],7:[function(require,module,exports){
 module.exports={

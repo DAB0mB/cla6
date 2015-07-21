@@ -9,6 +9,8 @@ var spy = Sinon.spy;
 describe('PluginsManager', function() {
   before(function() {
     this.plugin = {
+      name: 'testPlugin',
+      provider: {},
       initialize: spy(),
       manipulate: spy()
     };
@@ -28,11 +30,6 @@ describe('PluginsManager', function() {
     it('should throw an error if plugin is not an object', function() {
       boundAdd = PluginsManager.add.bind(PluginsManager, false);
       expect(boundAdd).to.throw(Error, /plugin.*object/);
-    });
-
-    it('should add plugin', function() {
-      PluginsManager.add(this.plugin);
-      expect(PluginsManager.plugins[0]).to.equal(this.plugin);
     });
 
     it('should call plugin initializer with one arg', function() {
@@ -60,6 +57,17 @@ describe('PluginsManager', function() {
       expect(this.plugin.manipulate.getCall(0).args).to.deep.equal(args);
       expect(this.plugin.manipulate.getCall(1).args).to.deep.equal(args);
       expect(this.plugin.manipulate.getCall(2).args).to.deep.equal(args);
+    });
+  });
+
+  describe('getProvider()', function() {
+    it('should get provider by plugin name', function() {
+      PluginsManager.add({});
+      PluginsManager.add(this.plugin);
+      PluginsManager.add({});
+
+      var provider = PluginsManager.getProvider('testPlugin');
+      expect(provider).to.equal(this.plugin.provider);
     });
   });
 });

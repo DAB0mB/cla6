@@ -147,22 +147,29 @@ The official plugins currently available are:
 A basic plugin stracture should look like so:
 
 ```js
+var name = 'pluginName';
+var provider = {};
+
 var initialize = function(Cla6) {
-  // initializer logic
+  // initialization logic
 };
 
 var manipulate = function(descriptors, Parent) {
-  // manipulator logic
+  // manipulation logic
 };
 
 module.exports = {
+  name: name,
+  provider: provider,
   initialize: initialize,
   manipulate: manipulate
 };
 ```
 
-- `initialize` - An optional initializer function which will be called with Cla6 instance once the plugin is used.
-- `manipulate` - A required manipulator function which will be called class creation with its properties and Parent class.
+- `name` - The name of the plugin which will then be used for providers injection.
+- `provider` - An object used to provide plugin's functionalityduring class initialization. See available [`plugins`](#plugins) as an example.
+- `initialize` - An optional initialization function which will be called with Cla6 instance once the plugin is used.
+- `manipulate` - A required manipulation function which will be called class creation with its properties and Parent class.
 
 ## Download
 

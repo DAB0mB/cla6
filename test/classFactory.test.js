@@ -110,6 +110,48 @@ describe('ClassFactory', function() {
         var keys = Object.keys(Klass.prototype);
         expect(keys).to.be.empty;
       });
+
+      it('should set properties by function return value', function() {
+        var props = function() {
+          return {
+            'foo': 'foo',
+            'bar': 'bar'
+          };
+        };
+
+        var Klass = ClassFactory.create('Klass', props);
+        expect(Klass.prototype.foo).to.equal('foo');
+        expect(Klass.prototype.bar).to.equal('bar');
+      });
+
+      it('should inject providers by plugin names', function() {
+        var plugin1 = {
+          name: 'provider1',
+          provider: {}
+        };
+
+        var plugin2 = {
+          name: 'provider2',
+          provider: {}
+        };
+
+        PluginsManager.add(plugin1);
+        PluginsManager.add(plugin2);
+
+        ClassFactory.create('Klass', function(provider1, provider2) {
+          expect(provider1).to.equal(plugin1.provider);
+          expect(provider2).to.equal(plugin2.provider);
+          return {};
+        });
+
+        ClassFactory.create('Klass', function(provider2, provider1) {
+          expect(provider1).to.equal(plugin1.provider);
+          expect(provider2).to.equal(plugin2.provider);
+          return {};
+        });
+
+        PluginsManager.reset();
+      });
     });
 
     describe('inheritance', function() {
